@@ -17,7 +17,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(person, index) in this.$store.state.kbpData" class="active">
+            <tr v-for="(person, index) in this.$store.state.cData" class="active">
               <td>{{person.date}}</td>
               <td>{{person.state}}</td>
               <td>{{person.gender}}</td>
@@ -37,12 +37,35 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {}
+};
 </script>
 
 <style scoped>
+table {
+  width: 100%;
+}
 thead {
   font-weight: bold;
+  background-color: #eee;
+}
+tbody {
+}
+tr {
+  height: 2em;
+  vertical-align: middle;
+}
+
+.table-striped tr:nth-child(even) {
+  background-color: #eee;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #ddd;
 }
 </style>
 

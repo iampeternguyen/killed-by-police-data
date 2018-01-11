@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <h1>People killed by police in {{this.$store.getters.year}}</h1>
+    <h1>People killed by police in {{this.$store.state.year}}</h1>
       <p>Data from <a href="http://killedbypolice.net/">Killed by Police</a></p>
+      <p><a href="https://github.com/iampeternguyen/killed-by-police-data">GitHub Source</a>
       <YearSelection/>
       <D3/>
     <MainTable/>

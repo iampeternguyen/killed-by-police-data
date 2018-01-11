@@ -7,7 +7,7 @@
         <option value="kbp2015">2015</option>
         <option value="kbp2014">2014</option>
       </select><br><br>  
-          <h3>Total: {{this.$store.state.kbpData.length}}</h3>
+          <h3>Total: {{this.$store.state.cData.length}}</h3>
 
   </div>
 </template>

@@ -5,58 +5,80 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state: {
-        kbpData: [],
+        kbpData: {
+            y2018: [],
+            y2017: [],
+            y2016: [],
+            y2015: [],
+            y2014: []
+        },
         rawData: [],
-        selectedYear: ""
+        selectedYear: "",
+        year: "",
+        cData: []
     },
     getters: {
-        year(state) {
-            let year;
-            if (state.selectedYear == "") {
-                return 2018;
-            } else {
-                year = /\d{4}/gi.exec(state.selectedYear);
-                return year[0];
-            }
-        }
+
     },
     mutations: {
+
         getRawData(state, y) {
             y ? state.selectedYear = y.target.value : state.selectedYear = "";
 
-            // reset kbpData
-            state.kbpData = [];
+
+
+            //state.kbpData = [];
             var xhttp = new XMLHttpRequest();
 
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    // create array of rows
-                    const regex = /\<tr\>/gi;
-                    let rawData = this.responseText.split(regex);
-
-                    // create array of columns
-                    let data = [];
-                    const td = /\<td\>/gi;
-                    rawData.forEach(element => {
-                        let array = element.split(td);
-                        // save data that has the proper number of columns
-                        if (array.length === 8) {
-                            data.push(array);
-                        }
-                    });
-
-                    // remove non-data headers
-                    data.splice(0, 2);
-                    organizeData(data);
-
+            let year = () => {
+                if (state.selectedYear == "") {
+                    return 2018;
+                } else {
+                    year = /\d{4}/gi.exec(state.selectedYear);
+                    return year[0];
                 }
-            };
+            }
 
-            // CORS get data workaround
-            let link = "https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/" +
-            state.selectedYear;
-            xhttp.open("GET", link, true);
-            xhttp.send();
+            state.year = year();
+
+            state.cData = state.kbpData[
+                "y" + state.year
+            ]
+            if (state.kbpData["y" + state.year].length != 0) {
+                console.log("Already retrieved data")
+            } else {
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // create array of rows
+                        const regex = /\<tr\>/gi;
+                        let rawData = this.responseText.split(regex);
+
+                        // create array of columns
+                        let data = [];
+                        const td = /\<td\>/gi;
+                        rawData.forEach(element => {
+                            let array = element.split(td);
+                            // save data that has the proper number of columns
+                            if (array.length === 8) {
+                                data.push(array);
+                            }
+                        });
+
+                        // remove non-data headers
+                        data.splice(0, 2);
+                        organizeData(data);
+
+                    }
+                };
+
+                // CORS get data workaround
+                let link = "https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/" +
+                state.selectedYear;
+                xhttp.open("GET", link, true);
+                xhttp.send();
+            }
+
+
             // organize data function
             function organizeData(data) {
                 data.forEach(e => {
@@ -68,10 +90,10 @@ export const store = new Vuex.Store({
                             for (let j = 0; j <= 7; j++) {
                                 temp.push(x[j][m]);
                             }
-                            state.kbpData.push(saveData(temp));
+                            state.kbpData["y" + state.year].push(saveData(temp));
                         }
                     } else {
-                        state.kbpData.push(saveData(e));
+                        state.kbpData["y" + state.year].push(saveData(e));
                     }
                 });
 
@@ -154,7 +176,7 @@ export const store = new Vuex.Store({
                     // get news link
                     match = e[7].split('"');
                     let newsLink = match[1];
-                    
+
                     // save data
                     return {
                         date,

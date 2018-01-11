@@ -5,6 +5,7 @@
       <div id="gender"></div>
       <div id="race"></div>
       <div id="state"></div>
+      <div id="month"></div>
       
       
     </div>
@@ -39,6 +40,20 @@ export default {
         a45to55: 0,
         over55: 0,
         unreported: 0
+      },
+      month: {
+        jan: 0,
+        feb: 0,
+        mar: 0,
+        apr: 0,
+        may: 0,
+        jun: 0,
+        jul: 0,
+        aug: 0,
+        sep: 0,
+        oct: 0,
+        nov: 0,
+        dec: 0
       }
     };
   },
@@ -65,6 +80,20 @@ export default {
         a45to55: 0,
         over55: 0,
         unreported: 0
+      };
+      this.month = {
+        jan: 0,
+        feb: 0,
+        mar: 0,
+        apr: 0,
+        may: 0,
+        jun: 0,
+        jul: 0,
+        aug: 0,
+        sep: 0,
+        oct: 0,
+        nov: 0,
+        dec: 0
       };
     },
     calculatedData() {
@@ -115,6 +144,33 @@ export default {
           this.age.over55++;
         } else {
           this.age.unreported++;
+        }
+
+        // calculate month data
+        if (element.date.match(/jan/i)) {
+          this.month.jan++;
+        } else if (element.date.match(/feb/i)) {
+          this.month.feb++;
+        } else if (element.date.match(/mar/i)) {
+          this.month.mar++;
+        } else if (element.date.match(/apr/i)) {
+          this.month.apr++;
+        } else if (element.date.match(/may/i)) {
+          this.month.may++;
+        } else if (element.date.match(/jun/i)) {
+          this.month.jun++;
+        } else if (element.date.match(/jul/i)) {
+          this.month.jul++;
+        } else if (element.date.match(/aug/i)) {
+          this.month.aug++;
+        } else if (element.date.match(/sep/i)) {
+          this.month.sep++;
+        } else if (element.date.match(/oct/i)) {
+          this.month.oct++;
+        } else if (element.date.match(/nov/i)) {
+          this.month.nov++;
+        } else if (element.date.match(/dec/i)) {
+          this.month.dec++;
         }
       });
 
@@ -238,6 +294,7 @@ export default {
             .text(d.data.label + ": " + d.data.count)
             .style("left", d3.event.pageX - 30 + "px")
             .style("top", d3.event.pageY - 40 + "px")
+            .style("position", "absolute")
             .style("background-color", "#EFE8D3")
             .style("padding", 5 + "px")
             .style("font-color", "steelgrey");
@@ -409,6 +466,7 @@ export default {
             .text(d.label + ": " + d.count)
             .style("left", d3.event.pageX - 30 + "px")
             .style("top", d3.event.pageY - 40 + "px")
+            .style("position", "absolute")
             .style("background-color", "#EFE8D3")
             .style("padding", 5 + "px")
             .style("font-color", "steelgrey");
@@ -432,25 +490,217 @@ export default {
             .style("opacity", 0);
         });
 
+      var titleScale = d3
+        .scaleLinear()
+        .domain([250, 1000])
+        .range([10, 24]);
+
       svg
         .append("text")
         .attr("x", width / 2)
         .attr("y", 50)
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
-        .style("font-size", "2em")
+        .style("font-size", titleScale(width) + "px")
         .text("Death Count by State");
+    },
+    drawMonthBarChart() {
+      d3.select("#month").html("");
+
+      var dataset = [
+        { label: "January", count: this.month.jan },
+        { label: "February", count: this.month.feb },
+        { label: "March", count: this.month.mar },
+        { label: "April", count: this.month.apr },
+        { label: "May", count: this.month.may },
+        { label: "June", count: this.month.jun },
+        { label: "July", count: this.month.jul },
+        { label: "August", count: this.month.aug },
+        { label: "September", count: this.month.sep },
+        { label: "October", count: this.month.oct },
+        { label: "November", count: this.month.nov },
+        { label: "December", count: this.month.dec }
+      ];
+      var largestValue = 0;
+
+      dataset.forEach(e => {
+        if (e.count > largestValue) {
+          largestValue = e.count;
+        }
+      });
+
+      var width = d3
+        .select("#month")
+        .node()
+        .getBoundingClientRect().width;
+
+      var axisPlacement = 30;
+
+      var margin = {
+        top: 50,
+        right: 20,
+        bottom: 20,
+        left: axisPlacement * 2
+      };
+
+      if (width < 400) {
+        margin.left = 60;
+        width = 400;
+      } else if (margin.left < 60) {
+        margin.left = 60;
+      }
+      // Set minimum size
+
+      width = width - margin.left - margin.right;
+      var height = width / 2 - margin.top - margin.bottom;
+
+      var svg = d3
+        .select("#month")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+
+      var yScale = d3
+        .scaleLinear()
+        .domain([0, largestValue])
+        .range([height, margin.top]);
+
+      var xScale = d3
+        .scaleLinear()
+        .domain([0, dataset.length])
+        .range([margin.left, width]);
+
+      var yAxis = d3.axisLeft().scale(yScale);
+
+      var yAxisGroup = svg
+        .append("g")
+        .attr("transform", "translate(" + axisPlacement + ",0)")
+        .call(yAxis);
+      // var xAxis = d3.axisBottom().scale(xScale);
+      // var xAxisGroup = svg.append("g").call(xAxis);
+
+      var div = d3
+        .select("#month")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("display", "none");
+
+      svg
+        .selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("fill", (d, i) => {
+          if (d.count == largestValue) {
+            return "#A81D40";
+          } else {
+            return "#8C92A3";
+          }
+        })
+        .attr("y", (d, i) => {
+          return yScale(d.count);
+        })
+        .attr("x", (d, i) => {
+          return xScale(i);
+        })
+        .attr("width", (d, i) => {
+          return width / 12 - 5;
+        })
+        .attr("height", (d, i) => {
+          return height - yScale(d.count);
+        })
+        .style("opacity", 0.7)
+        .on("mouseover", function(d) {
+          d3
+            .select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", "orange");
+          div
+            .transition()
+            .duration(200)
+            .style("display", "block")
+            .style("opacity", 0.9);
+          div
+            .text(d.label + ": " + d.count)
+            .style("left", d3.event.pageX - 30 + "px")
+            .style("top", d3.event.pageY - 40 + "px")
+            .style("position", "absolute")
+            .style("background-color", "#EFE8D3")
+            .style("padding", 5 + "px")
+            .style("font-color", "steelgrey");
+        })
+        .on("mouseout", function(d) {
+          d3
+            .select(this)
+            .transition()
+            .duration(200)
+            .attr("fill", (d, i) => {
+              if (d.count == largestValue) {
+                return "#A81D40";
+              } else {
+                return "#8C92A3";
+              }
+            });
+          div
+            .transition()
+            .duration(500)
+            .style("display", "none")
+            .style("opacity", 0);
+        });
+
+      // svg
+      //   .selectAll("rect")
+      //   .data(dataset)
+      //   .enter()
+      //   .append("rect")
+      //   .attr("class", "bar")
+      //   .attr("fill", (d, i) => {
+      //     if (d.count == largestValue) {
+      //       return "#A81D40";
+      //     } else {
+      //       return "#8C92A3";
+      //     }
+      //   })
+      //   .attr("height", (d, i) => {
+      //     return yScale(d.count);
+      //   })
+      //   .attr("width", (d, i) => {
+      //     return 20;
+      //   })
+      //   .attr("x", (d, i) => {
+      //     return i * 20 + 5;
+      //   })
+      //   .attr("y", (d, i) => {
+      //     return 0;
+      //   });
+
+      var titleScale = d3
+        .scaleLinear()
+        .domain([250, 1000])
+        .range([10, 24]);
+
+      svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 30)
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .style("font-size", titleScale(width) + "px")
+        .text("Death Count by Month");
     },
     reDraw() {
       this.drawGenderChart();
       this.drawRaceChart();
       this.drawAgeChart();
+      this.drawMonthBarChart();
       this.drawStateChartBubble();
     }
   },
   computed: {
     kbpData() {
-      return this.$store.state.kbpData;
+      return this.$store.state.cData;
     }
   },
   mounted() {
@@ -462,7 +712,7 @@ export default {
     var calculate = this.calculatedData;
     this.$store.watch(
       function(state) {
-        return state.kbpData;
+        return state.cData;
       },
       function(oldData, newData) {
         calculate();
@@ -545,22 +795,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.data-wrapper {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 2%;
-  grid-auto-rows: minmax(100px, auto);
-}
-
 #race,
 #gender,
 #age {
-  grid-column: span 1;
-  min-width: 200px;
+  width: 33%;
+  display: inline-block;
+  min-width: 250px;
 }
 
 #state {
-  grid-column: span 3;
+  clear: both;
+  width: 100%;
   min-width: 400px;
 }
 .color-key {
