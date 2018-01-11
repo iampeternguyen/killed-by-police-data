@@ -2,7 +2,8 @@
   <div id="app">
     <h1>People killed by police in {{this.$store.state.year}}</h1>
       <p>Data from <a href="http://killedbypolice.net/">Killed by Police</a></p>
-      <p><a href="https://github.com/iampeternguyen/killed-by-police-data">GitHub Source</a>
+      <p><a href="https://github.com/iampeternguyen/killed-by-police-data">GitHub Source</a></p><br>
+
       <YearSelection/>
       <D3/>
     <MainTable/>
