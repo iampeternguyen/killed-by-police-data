@@ -6,8 +6,10 @@
         <option value="kbp2016">2016</option>
         <option value="kbp2015">2015</option>
         <option value="kbp2014">2014</option>
+        <option value="kbp2013">2013</option>
+
       </select><br><br>  
-          <h3>Total: {{this.$store.state.cData.length}}</h3>
+          <h3>Total: {{this.$store.state.kbpData[this.$store.state.dataKey].length}}</h3>
 
   </div>
 </template>
@@ -19,7 +21,7 @@ export default {
   },
   methods: {
     changeYear(y) {
-      this.$store.commit("getRawData", y);
+      this.$store.commit("setSelection", y.target.value);
     }
   }
 };

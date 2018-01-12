@@ -700,7 +700,8 @@ export default {
   },
   computed: {
     kbpData() {
-      return this.$store.state.cData;
+      var key = this.$store.state.dataKey;
+      return this.$store.state.kbpData[key];
     }
   },
   mounted() {
@@ -712,7 +713,16 @@ export default {
     var calculate = this.calculatedData;
     this.$store.watch(
       function(state) {
-        return state.cData;
+        return state.loaded;
+      },
+      function(oldData, newData) {
+        calculate();
+      }
+    );
+
+    this.$store.watch(
+      function(state) {
+        return state.dataKey;
       },
       function(oldData, newData) {
         calculate();

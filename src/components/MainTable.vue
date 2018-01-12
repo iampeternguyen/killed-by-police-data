@@ -17,7 +17,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(person, index) in this.$store.state.cData" class="active">
+            <tr v-for="(person, index) in this.$store.state.kbpData[this.$store.state.dataKey]" class="active">
               <td>{{person.date}}</td>
               <td>{{person.state}}</td>
               <td>{{person.gender}}</td>

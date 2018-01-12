@@ -10,20 +10,39 @@ export const store = new Vuex.Store({
             y2017: [],
             y2016: [],
             y2015: [],
-            y2014: []
+            y2014: [],
+            y2013: []
         },
         rawData: [],
         selectedYear: "",
-        year: "",
-        cData: []
+        year: 2018,
+        dataKey: "y2018",
+        loaded: false
     },
     getters: {
 
     },
     mutations: {
+        setSelection(state, y) {
+
+
+            if (y == "") {
+                y = 2018;
+            } else {
+                var year = /\d{4}/gi.exec(y);
+                y = year[0];
+            }
+
+            state.selectedYear = y;
+            state.year = y;
+            state.dataKey = "y" + y;
+
+        },
+
+
 
         getRawData(state, y) {
-            y ? state.selectedYear = y.target.value : state.selectedYear = "";
+            y ? state.selectedYear = y : state.selectedYear = "";
 
 
 
@@ -66,8 +85,8 @@ export const store = new Vuex.Store({
 
                         // remove non-data headers
                         data.splice(0, 2);
+                        console.log(data);
                         organizeData(data);
-
                     }
                 };
 
