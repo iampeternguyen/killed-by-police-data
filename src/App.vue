@@ -64,11 +64,9 @@ export default {
   methods: {
     loadData(y) {
       var self = this;
+      let axios = require("axios");
       return new Promise((resolve, reject) => {
         const yearLink = y;
-
-        //state.kbpData = [];
-        var xhttp = new XMLHttpRequest();
 
         let year = () => {
           if (yearLink == "") {
@@ -81,15 +79,16 @@ export default {
 
         const yearKey = "y" + year();
 
-        if (self.$store.state.kbpData[yearKey].length != 0) {
-          console.log("Already retrieved data");
-          resolve(self.$store.state.kbpData[yearKey]);
-        } else {
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              // create array of rows
+        // CORS get data workaround
+        let link =
+          "https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/" +
+          yearLink;
+
+        axios.get(link).then(
+          response => {
+            if (response.status === 200) {
               const regex = /\<tr\>/gi;
-              let rawData = this.responseText.split(regex);
+              let rawData = response.data.split(regex);
 
               // create array of columns
               let data = [];
@@ -106,15 +105,9 @@ export default {
               data.splice(0, 2);
               organizeData(data);
             }
-          };
-
-          // CORS get data workaround
-          let link =
-            "https://cors-anywhere.herokuapp.com/http://www.killedbypolice.net/" +
-            yearLink;
-          xhttp.open("GET", link, true);
-          xhttp.send();
-        }
+          },
+          error => console.log(error)
+        );
 
         // organize data function
         function organizeData(data) {
@@ -182,7 +175,6 @@ export default {
             let date = match[1];
 
             if (!validateDate(date)) {
-              console.log("invalid date");
               return false;
             }
 
