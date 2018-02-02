@@ -391,7 +391,7 @@ export default {
         };
 
         width = width - margin.left - margin.right;
-        var height = window.innerHeight - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
           .select("#state")
@@ -402,7 +402,7 @@ export default {
         var yScale = d3
           .scaleLinear()
           .domain([0, largestValue])
-          .range([height, margin.top]);
+          .range([height + margin.top, margin.top * 2]);
         var xScale = d3
           .scaleLinear()
           .domain([0, dataset.length])
@@ -512,7 +512,7 @@ export default {
         };
 
         width = width - margin.left - margin.right;
-        var height = window.innerHeight - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
           .select("#state")
@@ -523,7 +523,7 @@ export default {
         var yScale = d3
           .scaleLinear()
           .domain([0, dataset.length])
-          .range([height, margin.top]);
+          .range([height - margin.bottom, margin.top]);
         var xScale = d3
           .scaleLinear()
           .domain([0, largestValue])
@@ -536,7 +536,7 @@ export default {
 
         var xAxisGroup = svg
           .append("g")
-          .attr("transform", "translate(0," + height + margin.top + ")")
+          .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
         // var xAxis = d3.axisBottom().scale(xScale);
         // var xAxisGroup = svg.append("g").call(xAxis);
@@ -656,160 +656,265 @@ export default {
 
       var axisPlacement = 30;
 
-      var margin = {
-        top: 50,
-        right: 20,
-        bottom: 20,
-        left: axisPlacement * 2
-      };
-
-      if (width < 400) {
-        margin.left = 60;
-        width = 400;
-      } else if (margin.left < 60) {
-        margin.left = 60;
+      if (width < 500) {
+        drawVert();
+      } else {
+        drawHor();
       }
-      // Set minimum size
 
-      width = width - margin.left - margin.right;
-      var height = width / 2 - margin.top - margin.bottom;
+      function drawHor() {
+        var margin = {
+          top: 50,
+          right: 20,
+          bottom: 20,
+          left: axisPlacement * 2
+        };
 
-      var svg = d3
-        .select("#month")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
+        if (width < 400) {
+          margin.left = 60;
+          width = 400;
+        } else if (margin.left < 60) {
+          margin.left = 60;
+        }
+        // Set minimum size
 
-      var yScale = d3
-        .scaleLinear()
-        .domain([0, largestValue])
-        .range([height, margin.top]);
+        width = width - margin.left - margin.right;
+        var height = width / 2 - margin.top - margin.bottom;
 
-      var xScale = d3
-        .scaleLinear()
-        .domain([0, dataset.length])
-        .range([margin.left, width]);
+        var svg = d3
+          .select("#month")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom);
 
-      var yAxis = d3.axisLeft().scale(yScale);
+        var yScale = d3
+          .scaleLinear()
+          .domain([0, largestValue])
+          .range([height, margin.top]);
 
-      var yAxisGroup = svg
-        .append("g")
-        .attr("transform", "translate(" + axisPlacement + ",0)")
-        .call(yAxis);
-      // var xAxis = d3.axisBottom().scale(xScale);
-      // var xAxisGroup = svg.append("g").call(xAxis);
+        var xScale = d3
+          .scaleLinear()
+          .domain([0, dataset.length])
+          .range([margin.left, width]);
 
-      var div = d3
-        .select("#month")
-        .append("div")
-        .attr("class", "tooltip")
-        .style("display", "none");
+        var yAxis = d3.axisLeft().scale(yScale);
 
-      svg
-        .selectAll("rect")
-        .data(dataset)
-        .enter()
-        .append("rect")
-        .attr("class", "bar")
-        .attr("fill", (d, i) => {
-          if (d.count == largestValue) {
-            return "#A81D40";
-          } else {
-            return "#8C92A3";
-          }
-        })
-        .attr("y", (d, i) => {
-          return yScale(d.count);
-        })
-        .attr("x", (d, i) => {
-          return xScale(i);
-        })
-        .attr("width", (d, i) => {
-          return width / 12 - 5;
-        })
-        .attr("height", (d, i) => {
-          return height - yScale(d.count);
-        })
-        .style("opacity", 0.7)
-        .on("mouseover", function(d) {
-          d3
-            .select(this)
-            .transition()
-            .duration(200)
-            .attr("fill", "orange");
-          div
-            .transition()
-            .duration(200)
-            .style("display", "block")
-            .style("opacity", 0.9);
-          div
-            .text(d.label + ": " + d.count)
-            .style("left", d3.event.pageX - 30 + "px")
-            .style("top", d3.event.pageY - 40 + "px")
-            .style("position", "absolute")
-            .style("background-color", "#EFE8D3")
-            .style("padding", 5 + "px")
-            .style("font-color", "steelgrey");
-        })
-        .on("mouseout", function(d) {
-          d3
-            .select(this)
-            .transition()
-            .duration(200)
-            .attr("fill", (d, i) => {
-              if (d.count == largestValue) {
-                return "#A81D40";
-              } else {
-                return "#8C92A3";
-              }
-            });
-          div
-            .transition()
-            .duration(500)
-            .style("display", "none")
-            .style("opacity", 0);
-        });
+        var yAxisGroup = svg
+          .append("g")
+          .attr("transform", "translate(" + axisPlacement + ",0)")
+          .call(yAxis);
+        // var xAxis = d3.axisBottom().scale(xScale);
+        // var xAxisGroup = svg.append("g").call(xAxis);
 
-      // svg
-      //   .selectAll("rect")
-      //   .data(dataset)
-      //   .enter()
-      //   .append("rect")
-      //   .attr("class", "bar")
-      //   .attr("fill", (d, i) => {
-      //     if (d.count == largestValue) {
-      //       return "#A81D40";
-      //     } else {
-      //       return "#8C92A3";
-      //     }
-      //   })
-      //   .attr("height", (d, i) => {
-      //     return yScale(d.count);
-      //   })
-      //   .attr("width", (d, i) => {
-      //     return 20;
-      //   })
-      //   .attr("x", (d, i) => {
-      //     return i * 20 + 5;
-      //   })
-      //   .attr("y", (d, i) => {
-      //     return 0;
-      //   });
+        var div = d3
+          .select("#month")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("display", "none");
 
-      var titleScale = d3
-        .scaleLinear()
-        .domain([250, 1000])
-        .range([10, 24]);
+        svg
+          .selectAll("rect")
+          .data(dataset)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("fill", (d, i) => {
+            if (d.count == largestValue) {
+              return "#A81D40";
+            } else {
+              return "#8C92A3";
+            }
+          })
+          .attr("y", (d, i) => {
+            return yScale(d.count);
+          })
+          .attr("x", (d, i) => {
+            return xScale(i);
+          })
+          .attr("width", (d, i) => {
+            return width / 12 - 5;
+          })
+          .attr("height", (d, i) => {
+            return height - yScale(d.count);
+          })
+          .style("opacity", 0.7)
+          .on("mouseover", function(d) {
+            d3
+              .select(this)
+              .transition()
+              .duration(200)
+              .attr("fill", "orange");
+            div
+              .transition()
+              .duration(200)
+              .style("display", "block")
+              .style("opacity", 0.9);
+            div
+              .text(d.label + ": " + d.count)
+              .style("left", d3.event.pageX - 30 + "px")
+              .style("top", d3.event.pageY - 40 + "px")
+              .style("position", "absolute")
+              .style("background-color", "#EFE8D3")
+              .style("padding", 5 + "px")
+              .style("font-color", "steelgrey");
+          })
+          .on("mouseout", function(d) {
+            d3
+              .select(this)
+              .transition()
+              .duration(200)
+              .attr("fill", (d, i) => {
+                if (d.count == largestValue) {
+                  return "#A81D40";
+                } else {
+                  return "#8C92A3";
+                }
+              });
+            div
+              .transition()
+              .duration(500)
+              .style("display", "none")
+              .style("opacity", 0);
+          });
 
-      svg
-        .append("text")
-        .attr("x", width / 2)
-        .attr("y", 30)
-        .style("text-anchor", "middle")
-        .style("font-weight", "bold")
-        .style("font-size", titleScale(width) + "px")
-        .text("Death Count by Month");
+        var titleScale = d3
+          .scaleLinear()
+          .domain([250, 1000])
+          .range([10, 24]);
+
+        svg
+          .append("text")
+          .attr("x", width / 2)
+          .attr("y", 30)
+          .style("text-anchor", "middle")
+          .style("font-weight", "bold")
+          .style("font-size", titleScale(width) + "px")
+          .text("Death Count by Month");
+      }
+
+      function drawVert() {
+        var margin = {
+          top: 50,
+          right: 20,
+          bottom: 20,
+          left: 20
+        };
+
+        width = width - margin.left - margin.right;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
+
+        var svg = d3
+          .select("#month")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom);
+
+        var yScale = d3
+          .scaleLinear()
+          .domain([0, dataset.length])
+          .range([margin.top * 2, height]);
+
+        var xScale = d3
+          .scaleLinear()
+          .domain([0, largestValue])
+          .range([margin.left, width]);
+
+        var xAxis = d3.axisBottom().scale(xScale);
+
+        var xAxisGroup = svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+        // var xAxis = d3.axisBottom().scale(xScale);
+        // var xAxisGroup = svg.append("g").call(xAxis);
+
+        var div = d3
+          .select("#month")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("display", "none");
+
+        svg
+          .selectAll("rect")
+          .data(dataset)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("fill", (d, i) => {
+            if (d.count == largestValue) {
+              return "#A81D40";
+            } else {
+              return "#8C92A3";
+            }
+          })
+          .attr("y", (d, i) => {
+            return yScale(i);
+          })
+          .attr("x", (d, i) => {
+            return xScale(0);
+          })
+          .attr("width", (d, i) => {
+            return xScale(d.count) - margin.left;
+          })
+          .attr("height", (d, i) => {
+            return (height - margin.top) / 12 - 5;
+          })
+          .style("opacity", 0.7)
+          .on("mouseover", function(d) {
+            d3
+              .select(this)
+              .transition()
+              .duration(200)
+              .attr("fill", "orange");
+            div
+              .transition()
+              .duration(200)
+              .style("display", "block")
+              .style("opacity", 0.9);
+            div
+              .text(d.label + ": " + d.count)
+              .style("left", d3.event.pageX - 30 + "px")
+              .style("top", d3.event.pageY - 40 + "px")
+              .style("position", "absolute")
+              .style("background-color", "#EFE8D3")
+              .style("padding", 5 + "px")
+              .style("font-color", "steelgrey");
+          })
+          .on("mouseout", function(d) {
+            d3
+              .select(this)
+              .transition()
+              .duration(200)
+              .attr("fill", (d, i) => {
+                if (d.count == largestValue) {
+                  return "#A81D40";
+                } else {
+                  return "#8C92A3";
+                }
+              });
+            div
+              .transition()
+              .duration(500)
+              .style("display", "none")
+              .style("opacity", 0);
+          });
+
+        var titleScale = d3
+          .scaleLinear()
+          .domain([250, 1000])
+          .range([10, 24]);
+
+        svg
+          .append("text")
+          .attr("x", width / 2)
+          .attr("y", 30)
+          .style("text-anchor", "middle")
+          .style("font-weight", "bold")
+          .style("font-size", titleScale(width) + "px")
+          .text("Death Count by Month");
+      }
     },
+
     reDraw() {
       this.drawGenderChart();
       this.drawRaceChart();
