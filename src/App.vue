@@ -48,20 +48,6 @@ export default {
         });
       });
     });
-    // self.loadData(2017).then(() => {
-    //   console.log("2017 data loaded successfully");
-    // });
-    // year.forEach(y => {
-    //   this.$store.commit("getRawData", y);
-    // });
-  },
-
-  computed: {
-    loading() {
-      let loaded = false;
-      //for (e in this.$store.statistics)
-      return loaded;
-    }
   },
   methods: {
     loadData(y) {

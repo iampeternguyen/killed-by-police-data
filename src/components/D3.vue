@@ -17,174 +17,132 @@
 var d3 = require("d3");
 
 export default {
-  data() {
-    return {
-      gender: {
-        men: 0,
-        women: 0,
-        unreported: 0
-      },
-      race: {
-        white: 0,
-        black: 0,
-        asian: 0,
-        latinx: 0,
-        unreported: 0
-      },
-      state: {},
-      age: {
-        under18: 0,
-        a18to24: 0,
-        a25to34: 0,
-        a35to44: 0,
-        a45to55: 0,
-        over55: 0,
-        unreported: 0
-      },
-      month: {
-        jan: 0,
-        feb: 0,
-        mar: 0,
-        apr: 0,
-        may: 0,
-        jun: 0,
-        jul: 0,
-        aug: 0,
-        sep: 0,
-        oct: 0,
-        nov: 0,
-        dec: 0
-      }
-    };
-  },
   methods: {
-    resetData() {
-      this.gender = {
-        men: 0,
-        women: 0,
-        unreported: 0
+    calculatedData(year) {
+      let stats = {
+        gender: {
+          men: 0,
+          women: 0,
+          unreported: 0
+        },
+        race: {
+          white: 0,
+          black: 0,
+          asian: 0,
+          latinx: 0,
+          unreported: 0
+        },
+        state: {},
+        age: {
+          under18: 0,
+          a18to24: 0,
+          a25to34: 0,
+          a35to44: 0,
+          a45to55: 0,
+          over55: 0,
+          unreported: 0
+        },
+        month: {
+          jan: 0,
+          feb: 0,
+          mar: 0,
+          apr: 0,
+          may: 0,
+          jun: 0,
+          jul: 0,
+          aug: 0,
+          sep: 0,
+          oct: 0,
+          nov: 0,
+          dec: 0
+        }
       };
-      this.race = {
-        white: 0,
-        black: 0,
-        asian: 0,
-        latinx: 0,
-        unreported: 0
-      };
-      this.state = {};
-      this.age = {
-        under18: 0,
-        a18to24: 0,
-        a25to34: 0,
-        a35to44: 0,
-        a45to55: 0,
-        over55: 0,
-        unreported: 0
-      };
-      this.month = {
-        jan: 0,
-        feb: 0,
-        mar: 0,
-        apr: 0,
-        may: 0,
-        jun: 0,
-        jul: 0,
-        aug: 0,
-        sep: 0,
-        oct: 0,
-        nov: 0,
-        dec: 0
-      };
-    },
-    calculatedData() {
-      this.resetData();
-      this.kbpData.forEach(element => {
+      this.$store.state.kbpData[year].forEach(element => {
         // calculate gender data
 
         if (element.gender == "M") {
-          this.gender.men++;
+          stats.gender.men++;
         } else if (element.gender == "F") {
-          this.gender.women++;
+          stats.gender.women++;
         } else {
-          this.gender.unreported++;
+          stats.gender.unreported++;
         }
 
         // calculate race data
 
         if (element.race == "W") {
-          this.race.white++;
+          stats.race.white++;
         } else if (element.race == "B") {
-          this.race.black++;
+          stats.race.black++;
         } else if (element.race == "A") {
-          this.race.asian++;
+          stats.race.asian++;
         } else if (element.race == "L") {
-          this.race.latinx++;
+          stats.race.latinx++;
         } else {
-          this.race.unreported++;
+          stats.race.unreported++;
         }
 
-        if (this.state[element.state]) {
-          this.state[element.state]++;
+        if (stats.state[element.state]) {
+          stats.state[element.state]++;
         } else {
-          this.state[element.state] = 1;
+          stats.state[element.state] = 1;
         }
         //calculate age data
 
         if (element.age < 18) {
-          this.age.under18++;
+          stats.age.under18++;
         } else if (element.age >= 18 && element.age < 25) {
-          this.age.a18to24++;
+          stats.age.a18to24++;
         } else if (element.age >= 25 && element.age < 35) {
-          this.age.a25to34++;
+          stats.age.a25to34++;
         } else if (element.age >= 35 && element.age < 45) {
-          this.age.a35to44++;
+          stats.age.a35to44++;
         } else if (element.age >= 45 && element.age < 55) {
-          this.age.a45to55;
+          stats.age.a45to55;
         } else if (element.age >= 55) {
-          this.age.over55++;
+          stats.age.over55++;
         } else {
-          this.age.unreported++;
+          stats.age.unreported++;
         }
 
         // calculate month data
         if (element.date.match(/jan/i)) {
-          this.month.jan++;
+          stats.month.jan++;
         } else if (element.date.match(/feb/i)) {
-          this.month.feb++;
+          stats.month.feb++;
         } else if (element.date.match(/mar/i)) {
-          this.month.mar++;
+          stats.month.mar++;
         } else if (element.date.match(/apr/i)) {
-          this.month.apr++;
+          stats.month.apr++;
         } else if (element.date.match(/may/i)) {
-          this.month.may++;
+          stats.month.may++;
         } else if (element.date.match(/jun/i)) {
-          this.month.jun++;
+          stats.month.jun++;
         } else if (element.date.match(/jul/i)) {
-          this.month.jul++;
+          stats.month.jul++;
         } else if (element.date.match(/aug/i)) {
-          this.month.aug++;
+          stats.month.aug++;
         } else if (element.date.match(/sep/i)) {
-          this.month.sep++;
+          stats.month.sep++;
         } else if (element.date.match(/oct/i)) {
-          this.month.oct++;
+          stats.month.oct++;
         } else if (element.date.match(/nov/i)) {
-          this.month.nov++;
+          stats.month.nov++;
         } else if (element.date.match(/dec/i)) {
-          this.month.dec++;
+          stats.month.dec++;
         }
       });
-
-      this.reDraw();
+      this.$store.state.stats[year] = stats;
     },
     drawAgeChart() {
       var dataset = [
-        { label: "Under 18", count: this.age.under18 },
-        { label: "18 to 24", count: this.age.a18to24 },
-        { label: "25 to 34", count: this.age.a25to34 },
-        { label: "35 to 44", count: this.age.a35to44 },
-        { label: "45 to 54", count: this.age.a45to55 },
-        { label: "Over 55", count: this.age.over55 },
-        { label: "Unreported", count: this.age.unreported }
+        { label: "Under 18", count: this.stats.age.under18 },
+        { label: "18 to 24", count: this.stats.age.a18to24 },
+        { label: "25 to 34", count: this.stats.age.a25to34 },
+        { label: "35 to 44", count: this.stats.age.a35to44 },
+        { label: "45 to 54", count: this.stats.age.a45to55 },
+        { label: "Over 55", count: this.stats.age.over55 },
+        { label: "Unreported", count: this.stats.age.unreported }
       ];
       var id = "#age";
       var blues = [
@@ -200,9 +158,9 @@ export default {
     },
     drawGenderChart() {
       var dataset = [
-        { label: "Men", count: this.gender.men },
-        { label: "Women", count: this.gender.women },
-        { label: "Unreported", count: this.gender.unreported }
+        { label: "Men", count: this.stats.gender.men },
+        { label: "Women", count: this.stats.gender.women },
+        { label: "Unreported", count: this.stats.gender.unreported }
       ];
       var id = "#gender";
       var greens = ["#a1d99b", "#31a354", "#e5f5e0"];
@@ -210,11 +168,11 @@ export default {
     },
     drawRaceChart() {
       var dataset = [
-        { label: "White", count: this.race.white },
-        { label: "Black", count: this.race.black },
-        { label: "Asian", count: this.race.asian },
-        { label: "Latinx", count: this.race.latinx },
-        { label: "Unreported", count: this.race.unreported }
+        { label: "White", count: this.stats.race.white },
+        { label: "Black", count: this.stats.race.black },
+        { label: "Asian", count: this.stats.race.asian },
+        { label: "Latinx", count: this.stats.race.latinx },
+        { label: "Unreported", count: this.stats.race.unreported }
       ];
       var id = "#race";
       var purples = ["#cbc9e2", "#9e9ac8", "#756bb1", "#54278f", "#f2f0f7"];
@@ -356,10 +314,10 @@ export default {
       d3.select("#state").html("");
 
       var dataset = [];
-      Object.keys(this.state)
+      Object.keys(this.stats.state)
         .sort()
         .forEach((v, i) => {
-          dataset.push({ label: v, count: this.state[v] });
+          dataset.push({ label: v, count: this.stats.state[v] });
         });
 
       var largestValue = 0;
@@ -628,18 +586,18 @@ export default {
       d3.select("#month").html("");
 
       var dataset = [
-        { label: "January", count: this.month.jan },
-        { label: "February", count: this.month.feb },
-        { label: "March", count: this.month.mar },
-        { label: "April", count: this.month.apr },
-        { label: "May", count: this.month.may },
-        { label: "June", count: this.month.jun },
-        { label: "July", count: this.month.jul },
-        { label: "August", count: this.month.aug },
-        { label: "September", count: this.month.sep },
-        { label: "October", count: this.month.oct },
-        { label: "November", count: this.month.nov },
-        { label: "December", count: this.month.dec }
+        { label: "January", count: this.stats.month.jan },
+        { label: "February", count: this.stats.month.feb },
+        { label: "March", count: this.stats.month.mar },
+        { label: "April", count: this.stats.month.apr },
+        { label: "May", count: this.stats.month.may },
+        { label: "June", count: this.stats.month.jun },
+        { label: "July", count: this.stats.month.jul },
+        { label: "August", count: this.stats.month.aug },
+        { label: "September", count: this.stats.month.sep },
+        { label: "October", count: this.stats.month.oct },
+        { label: "November", count: this.stats.month.nov },
+        { label: "December", count: this.stats.month.dec }
       ];
       var largestValue = 0;
 
@@ -924,9 +882,9 @@ export default {
     }
   },
   computed: {
-    kbpData() {
+    stats() {
       var key = this.$store.state.dataKey;
-      return this.$store.state.kbpData[key];
+      return this.$store.state.stats[key];
     }
   },
   mounted() {
@@ -936,96 +894,21 @@ export default {
   },
   created() {
     var calculate = this.calculatedData;
+    var reDraw = this.reDraw;
     this.$store.watch(
       function(state) {
         return state.loaded;
       },
       function(oldData, newData) {
-        calculate();
-      }
-    );
-
-    this.$store.watch(
-      function(state) {
-        return state.dataKey;
-      },
-      function(oldData, newData) {
-        calculate();
+        var year = ["y2018", "y2017", "y2016", "y2015", "y2014"];
+        year.forEach((year, i) => {
+          calculate(year);
+        });
+        reDraw();
       }
     );
   }
 };
-// old bar chart
-// drawStateChart() {
-//       var dataset = [];
-//       Object.keys(this.state)
-//         .sort()
-//         .forEach((v, i) => {
-//           dataset.push({ label: v, count: this.state[v] });
-//         });
-//       var height = 400,
-//         width = 720;
-
-//       var svg = d3
-//         .select("#state")
-//         .append("svg")
-//         .attr("height", height)
-//         .attr("width", width);
-
-//       var columnWidth = (width - dataset.length * 5) / dataset.length;
-//       //TODO map array find largest data value
-
-//       var largestValue = 0;
-
-//       dataset.forEach((e, i) => {
-//         if (e.count > largestValue) {
-//           largestValue = e.count;
-//         }
-//       });
-
-//       console.log(largestValue);
-
-//       svg
-//         .selectAll("rect")
-//         .data(dataset)
-//         .enter()
-//         .append("rect")
-//         .attr("class", "bar")
-//         .attr("fill", (d, i) => {
-//           if (d.count == largestValue) {
-//             return "#A81D40";
-//           } else {
-//             return "#8C92A3";
-//           }
-//         })
-//         .attr("height", (d, i) => {
-//           return d.count / largestValue * 360;
-//         })
-//         .attr("width", () => {
-//           return columnWidth;
-//         })
-//         .attr("x", (d, i) => {
-//           return columnWidth * i + 5 * i;
-//         })
-//         .attr("y", (d, i) => {
-//           return height - d.count / largestValue * 360 - 20;
-//         });
-
-//       svg
-//         .selectAll("text")
-//         .data(dataset)
-//         .enter()
-//         .append("text")
-//         .text(d => {
-//           return d.label;
-//         })
-//         .attr("x", (d, i) => {
-//           return columnWidth * i + 5 * i;
-//         })
-//         .attr("y", (d, i) => {
-//           return 400;
-//         });
-//     },
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
