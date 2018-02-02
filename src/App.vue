@@ -4,10 +4,10 @@
       <p>Data from <a href="http://killedbypolice.net/">Killed by Police</a></p>
       <p><a href="https://github.com/iampeternguyen/killed-by-police-data">GitHub Source</a></p>
       <br>
-
-      <YearSelection/>
-      <D3/>
-    <MainTable/>
+      <Spinner size="large" line-fg-color="#009900" line-bg-color="#555555" v-show="!this.$store.state.loaded"/>
+      <YearSelection v-show="this.$store.state.loaded"/>
+      <D3 v-show="this.$store.state.loaded"/>
+      <MainTable v-show="this.$store.state.loaded"/>
   </div>
 </template>
 
@@ -15,13 +15,15 @@
 import MainTable from "./components/MainTable";
 import D3 from "./components/D3";
 import YearSelection from "./components/YearSelection";
+import Spinner from "vue-simple-spinner";
 
 export default {
   name: "app",
   components: {
     MainTable,
     D3,
-    YearSelection
+    YearSelection,
+    Spinner
   },
   beforeMount: function() {
     var self = this;
