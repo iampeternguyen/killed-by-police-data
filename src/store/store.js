@@ -17,7 +17,16 @@ export const store = new Vuex.Store({
         selectedYear: "",
         year: 2018,
         dataKey: "y2018",
-        loaded: false
+        loaded: false,
+        stats: {
+            y2018: [],
+            y2017: [],
+            y2016: [],
+            y2015: [],
+            y2014: [],
+            y2013: []
+        },
+        selectedAll: false
     },
     getters: {
 
