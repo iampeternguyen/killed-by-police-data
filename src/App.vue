@@ -1,29 +1,24 @@
 <template>
   <div id="app">
-    <h1>People killed by police in {{this.$store.state.year}}</h1>
-      <p>Data from <a href="http://killedbypolice.net/">Killed by Police</a></p>
-      <p><a href="https://github.com/iampeternguyen/killed-by-police-data">GitHub Source</a></p>
-      <br>
-      <Spinner size="large" line-fg-color="#009900" line-bg-color="#555555" v-show="!this.$store.state.loaded"/>
-      <YearSelection v-show="this.$store.state.loaded"/>
-      <D3 v-show="this.$store.state.loaded"/>
-      <MainTable v-show="this.$store.state.loaded"/>
+    <spinner v-if="!this.$store.state.loaded" />
+    <YearSelection v-show="this.$store.state.loaded" />
+    <OneYearInfo v-show="this.displayYearInfo"/>
+    <AllYearInfo v-show="this.displayAllInfo" />
   </div>
 </template>
 
 <script>
-import MainTable from "./components/MainTable";
-import D3 from "./components/D3";
 import YearSelection from "./components/YearSelection";
 import Spinner from "vue-simple-spinner";
-
+import OneYearInfo from "./components/OneYearInfo/OneYearInfo";
+import AllYearInfo from "./components/AllYearInfo/AllYearInfo";
 export default {
   name: "app",
   components: {
-    MainTable,
-    D3,
+    OneYearInfo,
     YearSelection,
-    Spinner
+    Spinner,
+    AllYearInfo
   },
   beforeMount: function() {
     var self = this;
@@ -42,6 +37,12 @@ export default {
               self.loadData("kbp2013").then(() => {
                 self.$store.state.loaded = true;
                 console.log("2013 data loaded successfully");
+
+                var year = ["y2018", "y2017", "y2016", "y2015", "y2014"];
+                year.forEach(year => {
+                  self.calculateData(year);
+                });
+                console.log("Stats calculated");
               });
             });
           });
@@ -49,7 +50,131 @@ export default {
       });
     });
   },
+  computed: {
+    displayYearInfo() {
+      return this.$store.state.loaded && !this.$store.state.selectedAll;
+    },
+    displayAllInfo() {
+      return this.$store.state.loaded && this.$store.state.selectedAll;
+    }
+  },
   methods: {
+    calculateData(year) {
+      let stats = {
+        gender: {
+          men: 0,
+          women: 0,
+          unreported: 0
+        },
+        race: {
+          white: 0,
+          black: 0,
+          asian: 0,
+          latinx: 0,
+          unreported: 0
+        },
+        state: {},
+        age: {
+          under18: 0,
+          a18to24: 0,
+          a25to34: 0,
+          a35to44: 0,
+          a45to55: 0,
+          over55: 0,
+          unreported: 0
+        },
+        month: {
+          jan: 0,
+          feb: 0,
+          mar: 0,
+          apr: 0,
+          may: 0,
+          jun: 0,
+          jul: 0,
+          aug: 0,
+          sep: 0,
+          oct: 0,
+          nov: 0,
+          dec: 0
+        }
+      };
+      this.$store.state.kbpData[year].forEach(element => {
+        // calculate gender data
+
+        if (element.gender == "M") {
+          stats.gender.men++;
+        } else if (element.gender == "F") {
+          stats.gender.women++;
+        } else {
+          stats.gender.unreported++;
+        }
+
+        // calculate race data
+
+        if (element.race == "W") {
+          stats.race.white++;
+        } else if (element.race == "B") {
+          stats.race.black++;
+        } else if (element.race == "A") {
+          stats.race.asian++;
+        } else if (element.race == "L") {
+          stats.race.latinx++;
+        } else {
+          stats.race.unreported++;
+        }
+
+        if (stats.state[element.state]) {
+          stats.state[element.state]++;
+        } else {
+          stats.state[element.state] = 1;
+        }
+        //calculate age data
+
+        if (element.age < 18) {
+          stats.age.under18++;
+        } else if (element.age >= 18 && element.age < 25) {
+          stats.age.a18to24++;
+        } else if (element.age >= 25 && element.age < 35) {
+          stats.age.a25to34++;
+        } else if (element.age >= 35 && element.age < 45) {
+          stats.age.a35to44++;
+        } else if (element.age >= 45 && element.age < 55) {
+          stats.age.a45to55;
+        } else if (element.age >= 55) {
+          stats.age.over55++;
+        } else {
+          stats.age.unreported++;
+        }
+
+        // calculate month data
+        if (element.date.match(/jan/i)) {
+          stats.month.jan++;
+        } else if (element.date.match(/feb/i)) {
+          stats.month.feb++;
+        } else if (element.date.match(/mar/i)) {
+          stats.month.mar++;
+        } else if (element.date.match(/apr/i)) {
+          stats.month.apr++;
+        } else if (element.date.match(/may/i)) {
+          stats.month.may++;
+        } else if (element.date.match(/jun/i)) {
+          stats.month.jun++;
+        } else if (element.date.match(/jul/i)) {
+          stats.month.jul++;
+        } else if (element.date.match(/aug/i)) {
+          stats.month.aug++;
+        } else if (element.date.match(/sep/i)) {
+          stats.month.sep++;
+        } else if (element.date.match(/oct/i)) {
+          stats.month.oct++;
+        } else if (element.date.match(/nov/i)) {
+          stats.month.nov++;
+        } else if (element.date.match(/dec/i)) {
+          stats.month.dec++;
+        }
+      });
+      this.$store.state.stats[year] = stats;
+    },
     loadData(y) {
       var self = this;
       let axios = require("axios");

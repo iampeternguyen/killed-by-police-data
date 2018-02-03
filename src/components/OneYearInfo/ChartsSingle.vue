@@ -18,122 +18,6 @@ var d3 = require("d3");
 
 export default {
   methods: {
-    calculatedData(year) {
-      let stats = {
-        gender: {
-          men: 0,
-          women: 0,
-          unreported: 0
-        },
-        race: {
-          white: 0,
-          black: 0,
-          asian: 0,
-          latinx: 0,
-          unreported: 0
-        },
-        state: {},
-        age: {
-          under18: 0,
-          a18to24: 0,
-          a25to34: 0,
-          a35to44: 0,
-          a45to55: 0,
-          over55: 0,
-          unreported: 0
-        },
-        month: {
-          jan: 0,
-          feb: 0,
-          mar: 0,
-          apr: 0,
-          may: 0,
-          jun: 0,
-          jul: 0,
-          aug: 0,
-          sep: 0,
-          oct: 0,
-          nov: 0,
-          dec: 0
-        }
-      };
-      this.$store.state.kbpData[year].forEach(element => {
-        // calculate gender data
-
-        if (element.gender == "M") {
-          stats.gender.men++;
-        } else if (element.gender == "F") {
-          stats.gender.women++;
-        } else {
-          stats.gender.unreported++;
-        }
-
-        // calculate race data
-
-        if (element.race == "W") {
-          stats.race.white++;
-        } else if (element.race == "B") {
-          stats.race.black++;
-        } else if (element.race == "A") {
-          stats.race.asian++;
-        } else if (element.race == "L") {
-          stats.race.latinx++;
-        } else {
-          stats.race.unreported++;
-        }
-
-        if (stats.state[element.state]) {
-          stats.state[element.state]++;
-        } else {
-          stats.state[element.state] = 1;
-        }
-        //calculate age data
-
-        if (element.age < 18) {
-          stats.age.under18++;
-        } else if (element.age >= 18 && element.age < 25) {
-          stats.age.a18to24++;
-        } else if (element.age >= 25 && element.age < 35) {
-          stats.age.a25to34++;
-        } else if (element.age >= 35 && element.age < 45) {
-          stats.age.a35to44++;
-        } else if (element.age >= 45 && element.age < 55) {
-          stats.age.a45to55;
-        } else if (element.age >= 55) {
-          stats.age.over55++;
-        } else {
-          stats.age.unreported++;
-        }
-
-        // calculate month data
-        if (element.date.match(/jan/i)) {
-          stats.month.jan++;
-        } else if (element.date.match(/feb/i)) {
-          stats.month.feb++;
-        } else if (element.date.match(/mar/i)) {
-          stats.month.mar++;
-        } else if (element.date.match(/apr/i)) {
-          stats.month.apr++;
-        } else if (element.date.match(/may/i)) {
-          stats.month.may++;
-        } else if (element.date.match(/jun/i)) {
-          stats.month.jun++;
-        } else if (element.date.match(/jul/i)) {
-          stats.month.jul++;
-        } else if (element.date.match(/aug/i)) {
-          stats.month.aug++;
-        } else if (element.date.match(/sep/i)) {
-          stats.month.sep++;
-        } else if (element.date.match(/oct/i)) {
-          stats.month.oct++;
-        } else if (element.date.match(/nov/i)) {
-          stats.month.nov++;
-        } else if (element.date.match(/dec/i)) {
-          stats.month.dec++;
-        }
-      });
-      this.$store.state.stats[year] = stats;
-    },
     drawAgeChart() {
       var dataset = [
         { label: "Under 18", count: this.stats.age.under18 },
@@ -892,21 +776,8 @@ export default {
       window.addEventListener("resize", this.reDraw);
     });
   },
-  created() {
-    var calculate = this.calculatedData;
-    var reDraw = this.reDraw;
-    this.$store.watch(
-      function(state) {
-        return state.loaded;
-      },
-      function(oldData, newData) {
-        var year = ["y2018", "y2017", "y2016", "y2015", "y2014"];
-        year.forEach((year, i) => {
-          calculate(year);
-        });
-        reDraw();
-      }
-    );
+  afterCreate() {
+    this.reDraw();
   }
 };
 </script>

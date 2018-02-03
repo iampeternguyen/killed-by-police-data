@@ -26,6 +26,7 @@ export const store = new Vuex.Store({
             y2014: [],
             y2013: []
         },
+        selectedAll: false
     },
     getters: {
 
