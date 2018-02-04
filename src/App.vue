@@ -2,8 +2,8 @@
   <div id="app">
     <spinner v-if="!this.$store.state.loaded" />
     <YearSelection v-show="this.$store.state.loaded" />
-    <OneYearInfo v-show="this.displayYearInfo"/>
-    <AllYearInfo v-show="this.displayAllInfo" />
+    <OneYearInfo v-if="this.displayYearInfo"/>
+    <AllYearInfo v-if="this.displayAllInfo" />
   </div>
 </template>
 
