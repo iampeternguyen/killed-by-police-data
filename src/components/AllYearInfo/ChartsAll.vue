@@ -302,9 +302,7 @@ export default {
   mounted() {
     this.$nextTick(function() {
       this.reDraw();
-
       window.addEventListener("resize", this.reDraw);
-      this.reDraw();
     });
   }
 };
