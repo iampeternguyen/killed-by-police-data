@@ -79,7 +79,7 @@ export default {
       // Set minimum size
 
       width = width - margin.left - margin.right;
-      var height = width - margin.top - margin.bottom;
+      var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
       var radius = Math.min(width, height) / 2;
 
@@ -513,7 +513,7 @@ export default {
         };
 
         width = width - margin.left - margin.right;
-        var height = window.innerHeight - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
           .select("#month")

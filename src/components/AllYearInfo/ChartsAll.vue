@@ -55,7 +55,7 @@ export default {
         };
 
         width = width - margin.left - margin.right;
-        var height = window.innerHeight - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
           .select("#year")
@@ -231,7 +231,7 @@ export default {
             return xScale(d.count) - margin.left;
           })
           .attr("height", (d, i) => {
-            return (height - margin.top) / 12 - 5;
+            return (height - margin.top) / dataset.length - 5;
           })
           .style("opacity", 0.7)
           .on("mouseover", function(d) {
@@ -285,7 +285,7 @@ export default {
           .style("text-anchor", "middle")
           .style("font-weight", "bold")
           .style("font-size", titleScale(width) + "px")
-          .text("Death Count by year");
+          .text("Death Count by Year");
       }
     },
 
@@ -304,6 +304,7 @@ export default {
       this.reDraw();
 
       window.addEventListener("resize", this.reDraw);
+      this.reDraw();
     });
   }
 };
