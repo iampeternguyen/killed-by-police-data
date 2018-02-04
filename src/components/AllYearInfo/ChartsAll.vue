@@ -2,10 +2,7 @@
   <div>
     <div class="data-wrapper">
       <div id="year"></div>
-      <div id="gender"></div>
-      <div id="race"></div>
-      <div id="state"></div>
-      <div id="month"></div>
+  
       
       
     </div>
@@ -18,22 +15,15 @@ var d3 = require("d3");
 
 export default {
   methods: {
-    drawMonthBarChart() {
-      d3.select("#month").html("");
-
+    drawYearBarChart() {
+      d3.select("#year").html("");
       var dataset = [
-        { label: "January", count: this.stats.month.jan },
-        { label: "February", count: this.stats.month.feb },
-        { label: "March", count: this.stats.month.mar },
-        { label: "April", count: this.stats.month.apr },
-        { label: "May", count: this.stats.month.may },
-        { label: "June", count: this.stats.month.jun },
-        { label: "July", count: this.stats.month.jul },
-        { label: "August", count: this.stats.month.aug },
-        { label: "September", count: this.stats.month.sep },
-        { label: "October", count: this.stats.month.oct },
-        { label: "November", count: this.stats.month.nov },
-        { label: "December", count: this.stats.month.dec }
+        { label: "2018", count: this.$store.state.kbpData.y2018.length },
+        { label: "2016", count: this.$store.state.kbpData.y2016.length },
+        { label: "2017", count: this.$store.state.kbpData.y2017.length },
+        { label: "2015", count: this.$store.state.kbpData.y2015.length },
+        { label: "2014", count: this.$store.state.kbpData.y2014.length },
+        { label: "2013", count: this.$store.state.kbpData.y2013.length }
       ];
       var largestValue = 0;
 
@@ -42,9 +32,9 @@ export default {
           largestValue = e.count;
         }
       });
-
+      console.log(largestValue);
       var width = d3
-        .select("#month")
+        .select("#year")
         .node()
         .getBoundingClientRect().width;
 
@@ -64,19 +54,11 @@ export default {
           left: axisPlacement * 2
         };
 
-        if (width < 400) {
-          margin.left = 60;
-          width = 400;
-        } else if (margin.left < 60) {
-          margin.left = 60;
-        }
-        // Set minimum size
-
         width = width - margin.left - margin.right;
-        var height = width / 2 - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top - margin.bottom;
 
         var svg = d3
-          .select("#month")
+          .select("#year")
           .append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom);
@@ -97,11 +79,9 @@ export default {
           .append("g")
           .attr("transform", "translate(" + axisPlacement + ",0)")
           .call(yAxis);
-        // var xAxis = d3.axisBottom().scale(xScale);
-        // var xAxisGroup = svg.append("g").call(xAxis);
 
         var div = d3
-          .select("#month")
+          .select("#year")
           .append("div")
           .attr("class", "tooltip")
           .style("display", "none");
@@ -126,7 +106,7 @@ export default {
             return xScale(i);
           })
           .attr("width", (d, i) => {
-            return width / 12 - 5;
+            return width / dataset.length - 15;
           })
           .attr("height", (d, i) => {
             return height - yScale(d.count);
@@ -183,7 +163,7 @@ export default {
           .style("text-anchor", "middle")
           .style("font-weight", "bold")
           .style("font-size", titleScale(width) + "px")
-          .text("Death Count by Month");
+          .text("Death Count by Year");
       }
 
       function drawVert() {
@@ -198,7 +178,7 @@ export default {
         var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
-          .select("#month")
+          .select("#year")
           .append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom);
@@ -223,7 +203,7 @@ export default {
         // var xAxisGroup = svg.append("g").call(xAxis);
 
         var div = d3
-          .select("#month")
+          .select("#year")
           .append("div")
           .attr("class", "tooltip")
           .style("display", "none");
@@ -305,16 +285,12 @@ export default {
           .style("text-anchor", "middle")
           .style("font-weight", "bold")
           .style("font-size", titleScale(width) + "px")
-          .text("Death Count by Month");
+          .text("Death Count by year");
       }
     },
 
     reDraw() {
-      this.drawGenderChart();
-      this.drawRaceChart();
-      this.drawAgeChart();
-      this.drawMonthBarChart();
-      this.drawStateChartBubble();
+      this.drawYearBarChart();
     }
   },
   computed: {
@@ -325,26 +301,10 @@ export default {
   },
   mounted() {
     this.$nextTick(function() {
+      this.reDraw();
+
       window.addEventListener("resize", this.reDraw);
     });
-  },
-  created() {
-    console.log("created");
-    var calculate = this.calculatedData;
-    var reDraw = this.reDraw;
-
-    this.$store.watch(
-      function(state) {
-        return state.loaded;
-      },
-      function(oldData, newData) {
-        var year = ["y2018", "y2017", "y2016", "y2015", "y2014"];
-        year.forEach((year, i) => {
-          calculate(year);
-        });
-        reDraw();
-      }
-    );
   }
 };
 </script>

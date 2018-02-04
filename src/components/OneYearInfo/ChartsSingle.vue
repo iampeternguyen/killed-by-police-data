@@ -512,16 +512,8 @@ export default {
           left: axisPlacement * 2
         };
 
-        if (width < 400) {
-          margin.left = 60;
-          width = 400;
-        } else if (margin.left < 60) {
-          margin.left = 60;
-        }
-        // Set minimum size
-
         width = width - margin.left - margin.right;
-        var height = width / 2 - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top - margin.bottom;
 
         var svg = d3
           .select("#month")
@@ -773,11 +765,9 @@ export default {
   },
   mounted() {
     this.$nextTick(function() {
+      this.reDraw();
       window.addEventListener("resize", this.reDraw);
     });
-  },
-  afterCreate() {
-    this.reDraw();
   }
 };
 </script>

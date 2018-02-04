@@ -2,8 +2,8 @@
   <div id="app">
     <spinner v-if="!this.$store.state.loaded" />
     <YearSelection v-show="this.$store.state.loaded" />
-    <OneYearInfo v-show="this.displayYearInfo"/>
-    <AllYearInfo v-show="this.displayAllInfo" />
+    <OneYearInfo v-if="this.displayYearInfo"/>
+    <AllYearInfo v-if="this.displayAllInfo" />
   </div>
 </template>
 
@@ -35,13 +35,14 @@ export default {
             self.loadData("kbp2014").then(() => {
               console.log("2014 data loaded successfully");
               self.loadData("kbp2013").then(() => {
-                self.$store.state.loaded = true;
                 console.log("2013 data loaded successfully");
 
                 var year = ["y2018", "y2017", "y2016", "y2015", "y2014"];
                 year.forEach(year => {
                   self.calculateData(year);
                 });
+                self.$store.state.loaded = true;
+
                 console.log("Stats calculated");
               });
             });
