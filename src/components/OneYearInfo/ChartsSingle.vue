@@ -79,7 +79,7 @@ export default {
       // Set minimum size
 
       width = width - margin.left - margin.right;
-      var height = width - margin.top - margin.bottom;
+      var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
       var radius = Math.min(width, height) / 2;
 
@@ -521,7 +521,7 @@ export default {
         // Set minimum size
 
         width = width - margin.left - margin.right;
-        var height = width / 2 - margin.top - margin.bottom;
+        var height = window.innerHeight - margin.top * 2 - margin.bottom;
 
         var svg = d3
           .select("#month")
@@ -773,11 +773,10 @@ export default {
   },
   mounted() {
     this.$nextTick(function() {
+      this.reDraw();
+
       window.addEventListener("resize", this.reDraw);
     });
-  },
-  afterCreate() {
-    this.reDraw();
   }
 };
 </script>
