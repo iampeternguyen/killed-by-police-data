@@ -2,9 +2,6 @@
   <div>
     <div class="data-wrapper">
       <div id="year"></div>
-  
-      
-      
     </div>
 
   </div>
