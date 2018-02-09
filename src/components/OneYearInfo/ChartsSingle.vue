@@ -768,6 +768,17 @@ export default {
       this.reDraw();
       window.addEventListener("resize", this.reDraw);
     });
+  },
+  created() {
+    var reDraw = this.reDraw;
+    this.$store.watch(
+      function(state) {
+        return state.selectedYear;
+      },
+      function() {
+        reDraw();
+      }
+    );
   }
 };
 </script>
