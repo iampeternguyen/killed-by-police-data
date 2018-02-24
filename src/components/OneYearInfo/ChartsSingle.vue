@@ -19,7 +19,24 @@ var d3 = require("d3");
 export default {
   methods: {
     drawAgeChart() {
-      var dataset = [
+      var dataset = this.getAgeData();
+      var chartAttributes = this.setPieChartIDColorandTitle(
+        "#age",
+        [
+          "#c6dbef",
+          "#9ecae1",
+          "#6baed6",
+          "#4292c6",
+          "#2171b5",
+          "#084594",
+          "#eff3ff"
+        ],
+        "Age"
+      );
+      this.drawPieChart(dataset, chartAttributes);
+    },
+    getAgeData() {
+      return [
         { label: "Under 18", count: this.stats.age.under18 },
         { label: "18 to 24", count: this.stats.age.a18to24 },
         { label: "25 to 34", count: this.stats.age.a25to34 },
@@ -28,44 +45,45 @@ export default {
         { label: "Over 55", count: this.stats.age.over55 },
         { label: "Unreported", count: this.stats.age.unreported }
       ];
-      var id = "#age";
-      var blues = [
-        "#c6dbef",
-        "#9ecae1",
-        "#6baed6",
-        "#4292c6",
-        "#2171b5",
-        "#084594",
-        "#eff3ff"
-      ]; // last color unreported
-      this.drawPieChart(dataset, id, blues, "Age");
     },
     drawGenderChart() {
-      var dataset = [
+      var dataset = this.getGenderData();
+      var chartAttributes = this.setPieChartIDColorandTitle(
+        "#gender",
+        ["#a1d99b", "#31a354", "#e5f5e0"],
+        "Gender"
+      );
+      this.drawPieChart(dataset, chartAttributes);
+    },
+    getGenderData() {
+      return [
         { label: "Men", count: this.stats.gender.men },
         { label: "Women", count: this.stats.gender.women },
         { label: "Unreported", count: this.stats.gender.unreported }
       ];
-      var id = "#gender";
-      var greens = ["#a1d99b", "#31a354", "#e5f5e0"];
-      this.drawPieChart(dataset, id, greens, "Gender");
     },
     drawRaceChart() {
-      var dataset = [
+      var dataset = this.getRaceData();
+      var chartAttributes = this.setPieChartIDColorandTitle(
+        "#race",
+        ["#cbc9e2", "#9e9ac8", "#756bb1", "#54278f", "#f2f0f7"],
+        "Race"
+      );
+      this.drawPieChart(dataset, chartAttributes);
+    },
+    getRaceData() {
+      return [
         { label: "White", count: this.stats.race.white },
         { label: "Black", count: this.stats.race.black },
         { label: "Asian", count: this.stats.race.asian },
         { label: "Latinx", count: this.stats.race.latinx },
         { label: "Unreported", count: this.stats.race.unreported }
       ];
-      var id = "#race";
-      var purples = ["#cbc9e2", "#9e9ac8", "#756bb1", "#54278f", "#f2f0f7"];
-      this.drawPieChart(dataset, id, purples, "Race");
     },
-    drawPieChart(dataset, id, colors, title) {
-      d3.select(id).html("");
+    drawPieChart(dataset, chartAttributes) {
+      d3.select(chartAttributes.id).html("");
       var width = d3
-        .select(id)
+        .select(chartAttributes.id)
         .node()
         .getBoundingClientRect().width;
 
@@ -83,10 +101,10 @@ export default {
 
       var radius = Math.min(width, height) / 2;
 
-      var color = d3.scaleOrdinal(colors);
+      var color = d3.scaleOrdinal(chartAttributes.color);
 
       var svg = d3
-        .select(id)
+        .select(chartAttributes.id)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -106,7 +124,7 @@ export default {
         .sort(null);
 
       var div = d3
-        .select(id)
+        .select(chartAttributes.id)
         .append("div")
         .attr("class", "tooltip")
         .style("display", "none");
@@ -158,7 +176,7 @@ export default {
         });
 
       var legend = d3
-        .select(id)
+        .select(chartAttributes.id)
         .append("svg")
         .attr("class", "legend")
         .selectAll("g")
@@ -192,7 +210,7 @@ export default {
         .attr("y", 6)
         .style("text-anchor", "middle")
         .style("font-weight", "bold")
-        .text(title);
+        .text(chartAttributes.title);
     },
     drawStateChartBubble() {
       d3.select("#state").html("");
@@ -200,15 +218,15 @@ export default {
       var dataset = [];
       Object.keys(this.stats.state)
         .sort()
-        .forEach((v, i) => {
-          dataset.push({ label: v, count: this.stats.state[v] });
+        .forEach((state, i) => {
+          dataset.push({ label: state, count: this.stats.state[state] });
         });
 
       var largestValue = 0;
 
-      dataset.forEach((e, i) => {
-        if (e.count > largestValue) {
-          largestValue = e.count;
+      dataset.forEach((state, i) => {
+        if (state.count > largestValue) {
+          largestValue = state.count;
         }
       });
 
@@ -755,6 +773,13 @@ export default {
       this.drawAgeChart();
       this.drawMonthBarChart();
       this.drawStateChartBubble();
+    },
+    setPieChartIDColorandTitle(id, color, title) {
+      return {
+        id,
+        color,
+        title
+      };
     }
   },
   computed: {
