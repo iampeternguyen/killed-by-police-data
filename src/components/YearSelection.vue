@@ -1,15 +1,15 @@
 <template>
   <div class="">
       <select name="year" v-on:change="changeYear" class="form-control">
-        <option value="">2018</option>
+        <!-- Disabled, no meaningful multiyear data to report -->
+        <!-- <option value="all">All</option>  -->
+        <option value="" selected="selected">2018</option>
         <option value="kbp2017">2017</option>
         <option value="kbp2016">2016</option>
         <option value="kbp2015">2015</option>
         <option value="kbp2014">2014</option>
         <option value="kbp2013">2013</option>
-
-      </select><br><br>  
-          <h3>Total: {{this.$store.state.kbpData[this.$store.state.dataKey].length}}</h3>
+      </select>
 
   </div>
 </template>
@@ -21,7 +21,13 @@ export default {
   },
   methods: {
     changeYear(y) {
-      this.$store.commit("setSelection", y.target.value);
+      var selection = y.target.value;
+      if (selection != "all") {
+        this.$store.state.selectedAll = false;
+        this.$store.commit("setSelection", selection);
+      } else {
+        this.$store.state.selectedAll = true;
+      }
     }
   }
 };
